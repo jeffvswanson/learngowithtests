@@ -9,4 +9,3 @@ func TestAdder(t *testing.T) {
 		t.Errorf("got '%d' want '%d'", got, want)
 	}
 }
-package integers
