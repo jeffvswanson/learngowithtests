@@ -37,7 +37,7 @@ func TestSumAll(t *testing.T) {
 		if !reflect.DeepEqual(got, want) {
 			t.Errorf("got %v, want %v, given %v", got, want, given)
 		}
- 	})
+	})
 }
 
 func TestSumAllTails(t *testing.T) {

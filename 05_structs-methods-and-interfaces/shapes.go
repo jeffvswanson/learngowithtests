@@ -20,7 +20,7 @@ func (c Circle) Area() float64 {
 }
 
 type Rectangle struct {
-	Width float64
+	Width  float64
 	Height float64
 }
 
@@ -33,7 +33,7 @@ func (r Rectangle) Area() float64 {
 }
 
 type Triangle struct {
-	Base float64
+	Base   float64
 	Height float64
 }
 

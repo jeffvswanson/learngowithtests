@@ -15,7 +15,7 @@ func (b Bitcoin) String() string {
 	return fmt.Sprintf("%d BTC", b)
 }
 
-type Wallet struct{
+type Wallet struct {
 	balance Bitcoin
 }
 

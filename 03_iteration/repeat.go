@@ -1,6 +1,5 @@
 package iteration
 
-
 // Given a string and repetition count copies the string and returns it.
 // It panics if the repetitions is negative.
 func Repeat(character string, repetitions int) string {
