@@ -8,7 +8,7 @@ func TestWalk(t *testing.T) {
 
 	x := struct {
 		Name string
-	}(expected)
+	}{expected}
 
 	walk(x, func(input string) {
 		got = append(got, input)
