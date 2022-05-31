@@ -78,6 +78,63 @@ func TestWalk(t *testing.T) {
 			}
 		})
 	}
+	t.Run("maps", func(t *testing.T) {
+		aMap := map[string]string{
+			"Foo": "Bar",
+			"Baz": "Boz",
+		}
+		var got []string
+
+		walk(aMap, func(input string) {
+			got = append(got, input)
+		})
+		assertContains(t, got, "Bar")
+		assertContains(t, got, "Boz")
+	})
+	t.Run("channels", func(t *testing.T) {
+		aChannel := make(chan Profile)
+		go func() {
+			aChannel <- Profile{37, "Denver"}
+			aChannel <- Profile{23, "Anchorage"}
+			close(aChannel)
+		}()
+		var got []string
+		want := []string{"Denver", "Anchorage"}
+		walk(aChannel, func(input string) {
+			got = append(got, input)
+		})
+		if !reflect.DeepEqual(got, want) {
+			t.Errorf("got %v, want %v", got, want)
+		}
+	})
+	t.Run("function", func(t *testing.T) {
+		aFunction := func() (Profile, Profile) {
+			return Profile{37, "Denver"}, Profile{23, "Anchorage"}
+		}
+
+		var got []string
+		want := []string{"Denver", "Anchorage"}
+
+		walk(aFunction, func(input string) {
+			got = append(got, input)
+		})
+		if !reflect.DeepEqual(got, want) {
+			t.Errorf("got %v, want %v", got, want)
+		}
+	})
+}
+
+func assertContains(t *testing.T, got []string, want string) {
+	t.Helper()
+	contains := false
+	for _, x := range got {
+		if x == want {
+			contains = true
+		}
+	}
+	if !contains {
+		t.Errorf("expected %+v to contain %q, but value not present", got, want)
+	}
 }
 
 type Person struct {
