@@ -16,6 +16,11 @@ func TestRomanNumerals(t *testing.T) {
 		{"6 -> VI", 6, "VI"},
 		{"7 -> VII", 7, "VII"},
 		{"8 -> VIII", 8, "VIII"},
+		{"9 -> IX", 9, "IX"},
+		{"10 -> X", 10, "X"},
+		{"14 -> XIV", 14, "XIV"},
+		{"20 -> XX", 20, "XX"},
+		{"39 -> XXXIX", 39, "XXXIX"},
 	}
 	for _, tc := range cases {
 		t.Run(tc.Description, func(t *testing.T) {
