@@ -7,7 +7,19 @@ type RomanNumeral struct {
 	Symbol string
 }
 
-var allRomanNumerals = []RomanNumeral{
+// earlier..
+type RomanNumerals []RomanNumeral
+
+func (r RomanNumerals) ValueOf(symbol string) int {
+	for _, s := range r {
+		if s.Symbol == symbol {
+			return s.Value
+		}
+	}
+	return 0
+}
+
+var allRomanNumerals = RomanNumerals{
 	{1000, "M"},
 	{900, "CM"},
 	{500, "D"},
@@ -36,19 +48,33 @@ func ConvertToRoman(arabic int) string {
 	return result.String()
 }
 
-func ConvertToArabic(numeral string) int {
+// later..
+func ConvertToArabic(roman string) int {
 	total := 0
-	for range numeral {
-		total++
-	}
-	return total
-}
 
-func (r RomanNumeral) ValueOf(symbol string) int {
-	for arabic, rn := range allRomanNumerals {
-		if rn.Symbol == symbol {
-			return arabic
+	for i := 0; i < len(roman); i++ {
+		symbol := roman[i]
+
+		// look ahead to next symbol if we can
+		// if the current symbol is base 10 and a valid subtractor: I, X, C
+		if i+1 < len(roman) && (symbol == 'I') {
+			nextSymbol := roman[i+1]
+
+			// build the two character string
+			potentialNumber := string([]byte{symbol, nextSymbol})
+
+			// get the value of the two character string
+			value := allRomanNumerals.ValueOf(potentialNumber)
+
+			if value != 0 {
+				total += value
+				i++ // move past this character too for the next loop
+			} else {
+				total++
+			}
+		} else {
+			total++
 		}
 	}
-	return 0
+	return total
 }
