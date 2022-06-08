@@ -21,5 +21,13 @@ func SecondHand(t time.Time) Point {
 // Provides a clock hand position in radians
 func handPositionInRadians(t time.Time) float64 {
 	// One second is represented on an analog clock face with 2*pi/60 radians/second.
-	return float64(t.Second()) * (math.Pi / 30)
+	return math.Pi / (30 / float64(t.Second()))
+}
+
+// Determines the end point of clockhand given the time on a unit circle.
+func deriveHandPoint(t time.Time) Point {
+	angle := handPositionInRadians(t)
+	x := math.Sin(angle)
+	y := math.Cos(angle)
+	return Point{x, y}
 }
