@@ -65,3 +65,25 @@ func containsLine(l Line, ls []line) bool {
 	}
 	return false
 }
+
+func TestSVGWriterMinuteHand(t *testing.T) {
+	cases := []struct {
+		condition string
+		time      time.Time
+		line      Line
+	}{
+		{"0 minute position", simpleTime(0, 0, 0), Line{150, 150, 150, 70}},
+	}
+	for _, tc := range cases {
+		t.Run(tc.condition, func(t *testing.T) {
+			b := bytes.Buffer{}
+			clockface.SVGWriter(&b, tc.time)
+
+			svg := SVG{}
+			xml.Unmarshal(b.Bytes(), &svg)
+			if !containsLine(tc.line, svg.Line) {
+				t.Errorf("got minute hand line %+v, want %+v", tc.line, svg.Line)
+			}
+		})
+	}
+}
