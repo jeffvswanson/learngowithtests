@@ -9,7 +9,7 @@ import (
 	"github.com/jeffvswanson/learngowithtests/16_maths/clockface"
 )
 
-type Svg struct {
+type SVG struct {
 	XMLName xml.Name `xml:"svg"`
 	Text    string   `xml:",chardata"`
 	Xmlns   string   `xml:"xmlns,attr"`
@@ -17,41 +17,51 @@ type Svg struct {
 	Height  string   `xml:"height,attr"`
 	ViewBox string   `xml:"viewBox,attr"`
 	Version string   `xml:"version,attr"`
-	Circle  struct {
-		Text  string `xml:",chardata"`
-		Cx    string `xml:"cx,attr"`
-		Cy    string `xml:"cy,attr"`
-		R     string `xml:"r,attr"`
-		Style string `xml:"style,attr"`
-	} `xml:"circle"`
-	Line []struct {
-		Text  string `xml:",chardata"`
-		X1    string `xml:"x1,attr"`
-		Y1    string `xml:"y1,attr"`
-		X2    string `xml:"x2,attr"`
-		Y2    string `xml:"y2,attr"`
-		Style string `xml:"style,attr"`
-	} `xml:"line"`
+	Circle  Circle   `xml:"circle"`
+	Line    []Line   `xml:"line`
+}
+type Circle struct {
+	Cx float64 `xml:"cx,attr"`
+	Cy float64 `xml:"cy,attr"`
+	R  float64 `xml:"r,attr"`
 }
 
-func TestSVGWriterAtMidnight(t *testing.T) {
-	tm := time.Date(1337, time.January, 1, 0, 0, 0, 0, time.UTC)
-	b := bytes.Buffer{}
+type Line []struct {
+	X1 float64 `xml:"x1,attr"`
+	Y1 float64 `xml:"y1,attr"`
+	X2 float64 `xml:"x2,attr"`
+	Y2 float64 `xml:"y2,attr"`
+}
 
-	clockface.SVGWriter(&b, tm)
+func TestSVGWriterClockHand(t *testing.T) {
+	cases := []struct {
+		condition string
+		time      time.Time
+		line      Line
+	}{
+		{"0/12 position", simpleTime(0, 0, 0), Line{150, 150, 150, 60}},
+		{"6 position", simpleTime(0, 0, 30), Line{150, 150, 150, 240}},
+	}
+	for _, tc := range cases {
+		t.Run(tc.condition, func(t *testing.T) {
+			b := bytes.Buffer{}
+			clockface.SVGWriter(&b, tc.time)
 
-	svg := Svg{}
+			svg := SVG{}
+			xml.Unmarshal(b.Bytes(), &svg)
 
-	xml.Unmarshal(b.Bytes(), &svg)
+			if !containsLine(tc.line, svg.Line) {
+				t.Errorf("got (%+v) coordinates in the SVG output, want %+v", want, svg.Line)
+			}
+		})
+	}
+}
 
-	x2 := "150.000"
-	y2 := "60.000"
-
-	for _, line := range svg.Line {
-		if line.X2 == x2 && line.Y2 == y2 {
-			return
+func containsLine(l Line, ls []line) bool {
+	for _, line := range ls {
+		if line == l {
+			return true
 		}
 	}
-
-	t.Errorf("got (%v, %v) coordinates in the SVG output, want %v", x2, y2, b.String())
+	return false
 }
