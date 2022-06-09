@@ -1,6 +1,8 @@
 package clockface
 
 import (
+	"bytes"
+	"encoding/xml"
 	"math"
 	"testing"
 	"time"
@@ -86,4 +88,48 @@ func floatEquality(a, b float64) bool {
 // Helper function to test for clock Point equality due to float imprecision.
 func pointEquality(a, b Point) bool {
 	return floatEquality(a.X, b.X) && floatEquality(a.Y, b.Y)
+}
+
+type SVG struct {
+	XMLName xml.Name `xml:"svg"`
+	Text    string   `xml:",chardata"`
+	Xmlns   string   `xml:"xmlns,attr"`
+	Width   string   `xml:"width,attr"`
+	Height  string   `xml:"height,attr"`
+	ViewBox string   `xml:"viewBox,attr"`
+	Version string   `xml:"version,attr"`
+	Circle  struct {
+		Text  string `xml:",chardata"`
+		Cx    string `xml:"cx,attr"`
+		Cy    string `xml:"cy,attr"`
+		R     string `xml:"r,attr"`
+		Style string `xml:"style,attr"`
+	} `xml:"circle"`
+	Line []struct {
+		Text  string `xml:",chardata"`
+		X1    string `xml:"x1,attr"`
+		Y1    string `xml:"y1,attr"`
+		X2    string `xml:"x2,attr"`
+		Y2    string `xml:"y2,attr"`
+		Style string `xml:"style,attr"`
+	} `xml:"line"`
+}
+
+func TestSVGWriterAtMidnight(t *testing.T) {
+	tm := simpleTime(0, 0, 0)
+	b := bytes.Buffer{}
+	SVGWriter(&b, tm)
+
+	svg := SVG{}
+	xml.Unmarshal(b.Bytes(), &svg)
+
+	x2 := "150.000" // x position at midnight
+	y2 := "60.000"  // y position at midnight
+
+	for _, line := range svg.Line {
+		if line.X2 == x2 && line.Y2 == y2 {
+			return
+		}
+	}
+	t.Errorf("want (%+v, %+v) in the SVG output coordinates, got %v", x2, y2, b.String())
 }
