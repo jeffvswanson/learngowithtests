@@ -11,13 +11,6 @@ type Point struct {
 	Y float64
 }
 
-// SecondHand is the unit vector of the second hand of an analog clock at time 't'
-// represented by a Point.
-func SecondHand(t time.Time) Point {
-	p := handPositionInRadians(t)
-	return Point{150, p}
-}
-
 // Provides a clock hand position in radians
 func handPositionInRadians(t time.Time) float64 {
 	// One second is represented on an analog clock face with 2*pi/60 radians/second.
