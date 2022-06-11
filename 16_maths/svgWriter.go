@@ -24,7 +24,7 @@ func SVGWriter(w io.Writer, t time.Time) {
 // represented by a Point. Scales an analog clock's second hand to represent the time on the clock and the
 // point the second hand should be at on the clockface as represented on an SVG image.
 func SecondHand(w io.Writer, t time.Time) {
-	p := deriveHandPoint(t)
+	p := deriveSecondHandPoint(t)
 	p = Point{p.X * secondHandLength, p.Y * secondHandLength} // scale
 	p = Point{p.X, -p.Y}                                      // flip
 	p = Point{p.X + clockCenterX, p.Y + clockCenterY}         // translate

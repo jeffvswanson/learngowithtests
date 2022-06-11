@@ -1,41 +1,12 @@
 package clockface
 
 import (
-	"bytes"
-	"encoding/xml"
 	"math"
 	"testing"
 	"time"
 )
 
-func TestSecondHand(t *testing.T) {
-	cases := []struct {
-		condition string
-		Time      time.Time
-		Position  Point
-	}{
-		{
-			"hand at midnight",
-			time.Date(1337, time.January, 1, 0, 0, 0, 0, time.UTC),
-			Point{X: 150, Y: 150 - 90},
-		},
-		{
-			"hand at 30 seconds",
-			time.Date(1337, time.January, 1, 0, 0, 30, 0, time.UTC),
-			Point{X: 150, Y: 150 + 90},
-		},
-	}
-	for _, tc := range cases {
-		t.Run(tc.condition, func(t *testing.T) {
-			got := SecondHand(tc.Time)
-			if got != tc.Position {
-				t.Errorf("got %v, want %v", got, tc.Position)
-			}
-		})
-	}
-}
-
-func TestHandPositionInRadians(t *testing.T) {
+func TestSecondsInRadians(t *testing.T) {
 	cases := []struct {
 		condition string
 		time      time.Time
@@ -48,7 +19,7 @@ func TestHandPositionInRadians(t *testing.T) {
 	}
 	for _, tc := range cases {
 		t.Run(tc.condition, func(t *testing.T) {
-			got := handPositionInRadians(tc.time)
+			got := secondsInRadians(tc.time)
 			if got != tc.angle {
 				t.Fatalf("got %v radians, want %v", got, tc.angle)
 			}
@@ -56,11 +27,7 @@ func TestHandPositionInRadians(t *testing.T) {
 	}
 }
 
-func simpleTime(hours, minutes, seconds int) time.Time {
-	return time.Date(1337, time.January, 1, hours, minutes, seconds, 0, time.UTC)
-}
-
-func TestDeriveHandPoint(t *testing.T) {
+func TestDeriveSecondHandPoint(t *testing.T) {
 	cases := []struct {
 		condition string
 		time      time.Time
@@ -71,12 +38,35 @@ func TestDeriveHandPoint(t *testing.T) {
 	}
 	for _, tc := range cases {
 		t.Run(tc.condition, func(t *testing.T) {
-			got := deriveHandPoint(tc.time)
+			got := deriveSecondHandPoint(tc.time)
 			if !pointEquality(got, tc.point) {
 				t.Fatalf("want %v Point, got %v", tc.point, got)
 			}
 		})
 	}
+}
+
+func TestMinutesInRadians(t *testing.T) {
+	cases := []struct {
+		condition string
+		time      time.Time
+		angle     float64
+	}{
+		{"half hour", simpleTime(0, 30, 0), math.Pi},
+		{"7 seconds", simpleTime(0, 0, 7), 7 * (math.Pi / (30 * 60))},
+	}
+	for _, tc := range cases {
+		t.Run(tc.condition, func(t *testing.T) {
+			got := minutesInRadians(tc.time)
+			if got != tc.angle {
+				t.Fatalf("want %v radians, got %v", tc.angle, got)
+			}
+		})
+	}
+}
+
+func simpleTime(hours, minutes, seconds int) time.Time {
+	return time.Date(1337, time.January, 1, hours, minutes, seconds, 0, time.UTC)
 }
 
 // Helper function to test for float equality.
