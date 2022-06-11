@@ -25,15 +25,14 @@ type Circle struct {
 	Cy float64 `xml:"cy,attr"`
 	R  float64 `xml:"r,attr"`
 }
-
-type Line []struct {
+type Line struct {
 	X1 float64 `xml:"x1,attr"`
 	Y1 float64 `xml:"y1,attr"`
 	X2 float64 `xml:"x2,attr"`
 	Y2 float64 `xml:"y2,attr"`
 }
 
-func TestSVGWriterClockHand(t *testing.T) {
+func TestSVGWriterSecondHand(t *testing.T) {
 	cases := []struct {
 		condition string
 		time      time.Time
@@ -51,19 +50,10 @@ func TestSVGWriterClockHand(t *testing.T) {
 			xml.Unmarshal(b.Bytes(), &svg)
 
 			if !containsLine(tc.line, svg.Line) {
-				t.Errorf("got (%+v) coordinates in the SVG output, want %+v", want, svg.Line)
+				t.Errorf("got (%+v) coordinates in the SVG output, want %+v", tc.line, svg.Line)
 			}
 		})
 	}
-}
-
-func containsLine(l Line, ls []line) bool {
-	for _, line := range ls {
-		if line == l {
-			return true
-		}
-	}
-	return false
 }
 
 func TestSVGWriterMinuteHand(t *testing.T) {
@@ -86,4 +76,17 @@ func TestSVGWriterMinuteHand(t *testing.T) {
 			}
 		})
 	}
+}
+
+func simpleTime(hours, minutes, seconds int) time.Time {
+	return time.Date(1337, time.January, 1, hours, minutes, seconds, 0, time.UTC)
+}
+
+func containsLine(l Line, ls []Line) bool {
+	for _, line := range ls {
+		if line == l {
+			return true
+		}
+	}
+	return false
 }
