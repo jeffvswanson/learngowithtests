@@ -20,7 +20,7 @@ func TestSecondsInRadians(t *testing.T) {
 	for _, tc := range cases {
 		t.Run(tc.condition, func(t *testing.T) {
 			got := secondsInRadians(tc.time)
-			if got != tc.angle {
+			if !floatEquality(got, tc.angle) {
 				t.Fatalf("got %v radians, want %v", got, tc.angle)
 			}
 		})
@@ -58,7 +58,7 @@ func TestMinutesInRadians(t *testing.T) {
 	for _, tc := range cases {
 		t.Run(tc.condition, func(t *testing.T) {
 			got := minutesInRadians(tc.time)
-			if got != tc.angle {
+			if !floatEquality(got, tc.angle) {
 				t.Fatalf("want %v radians, got %v", tc.angle, got)
 			}
 		})
