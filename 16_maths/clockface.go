@@ -39,6 +39,12 @@ func hoursInRadians(t time.Time) float64 {
 	return (minutesInRadians(t) / 12) + (math.Pi / (6 / float64(t.Hour()%12)))
 }
 
+// deriveHourHandPoint provides the points a clock's hour hand should be at given a time.
+func deriveHourHandPoint(t time.Time) Point {
+	angle := hoursInRadians(t)
+	return derivePointFromAngle(angle)
+}
+
 // derivePointFromAngle build the end point of a hand of a clock represented with a unit circle given the angle of the hand from the 12 o'clock position
 func derivePointFromAngle(angle float64) Point {
 	x := math.Sin(angle)

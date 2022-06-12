@@ -105,6 +105,25 @@ func TestHoursInRadians(t *testing.T) {
 	}
 }
 
+func TestDeriveHourHandPoint(t *testing.T) {
+	cases := []struct {
+		condition string
+		time      time.Time
+		point     Point
+	}{
+		{"6 o'clock position", simpleTime(6, 0, 0), Point{0, -1}},
+		{"9 o'clock position", simpleTime(21, 0, 0), Point{-1, 0}},
+	}
+	for _, tc := range cases {
+		t.Run(tc.condition, func(t *testing.T) {
+			got := deriveHourHandPoint(tc.time)
+			if !pointEquality(got, tc.point) {
+				t.Fatalf("got %v Point, want %v", got, tc.point)
+			}
+		})
+	}
+}
+
 func simpleTime(hours, minutes, seconds int) time.Time {
 	return time.Date(1337, time.January, 1, hours, minutes, seconds, 0, time.UTC)
 }
