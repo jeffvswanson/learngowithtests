@@ -84,17 +84,38 @@ func TestDeriveMinuteHandPoint(t *testing.T) {
 	}
 }
 
+func TestHoursInRadians(t *testing.T) {
+	cases := []struct {
+		condition string
+		time      time.Time
+		angle     float64
+	}{
+		{"6 o'clock position", simpleTime(6, 0, 0), math.Pi},
+		{"12 o'clock position", simpleTime(0, 0, 0), 0},
+		{"9 o'clock position", simpleTime(9, 0, 0), math.Pi * 1.5},
+		{"12:01 and 30 seconds", simpleTime(0, 1, 30), math.Pi / ((6 * 60 * 60) / 90)},
+	}
+	for _, tc := range cases {
+		t.Run(tc.condition, func(t *testing.T) {
+			got := hoursInRadians(tc.time)
+			if !floatEquality(got, tc.angle) {
+				t.Fatalf("got %v radians, want %v", got, tc.angle)
+			}
+		})
+	}
+}
+
 func simpleTime(hours, minutes, seconds int) time.Time {
 	return time.Date(1337, time.January, 1, hours, minutes, seconds, 0, time.UTC)
 }
 
-// Helper function to test for float equality.
+// floatEquality is a helper function to test for float equality.
 func floatEquality(a, b float64) bool {
 	const equalityThreshold = 1e-7
 	return math.Abs(a-b) < equalityThreshold
 }
 
-// Helper function to test for clock Point equality due to float imprecision.
+// pointEquality is a helper function to test for clock Point equality due to float imprecision.
 func pointEquality(a, b Point) bool {
 	return floatEquality(a.X, b.X) && floatEquality(a.Y, b.Y)
 }

@@ -77,6 +77,28 @@ func TestSVGWriterMinuteHand(t *testing.T) {
 	}
 }
 
+// func TestSVGWriterHourHand(t *testing.T) {
+// 	cases := []struct {
+// 		condition string
+// 		time      time.Time
+// 		line      Line
+// 	}{
+// 		{"12 o'clock position", simpleTime(0, 0, 0), Line{150, 150, 150, 200}},
+// 	}
+// 	for _, tc := range cases {
+// 		t.Run(tc.condition, func(t *testing.T) {
+// 			b := bytes.Buffer{}
+// 			clockface.SVGWriter(&b, tc.time)
+
+// 			svg := SVG{}
+// 			xml.Unmarshal(b.Bytes(), &svg)
+// 			if !containsLine(tc.line, svg.Line) {
+// 				t.Errorf("got hour hand line coordinates %+v, want %+v", svg.Line, tc.line)
+// 			}
+// 		})
+// 	}
+// }
+
 func simpleTime(hours, minutes, seconds int) time.Time {
 	return time.Date(1337, time.January, 1, hours, minutes, seconds, 0, time.UTC)
 }
