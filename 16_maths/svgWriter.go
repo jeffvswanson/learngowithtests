@@ -7,6 +7,7 @@ import (
 )
 
 const (
+	hourHandLength   = 50
 	minuteHandLength = 80
 	secondHandLength = 90
 	clockCenterX     = 150
@@ -19,6 +20,7 @@ func SVGWriter(w io.Writer, t time.Time) {
 	io.WriteString(w, bezel)
 	secondHand(w, t)
 	minuteHand(w, t)
+	hourHand(w, t)
 	io.WriteString(w, svgEnd)
 }
 
@@ -35,6 +37,14 @@ func secondHand(w io.Writer, t time.Time) {
 // point the minute hand should be at on the clockface as represented on an SVG image.
 func minuteHand(w io.Writer, t time.Time) {
 	p := makeHand(deriveMinuteHandPoint(t), minuteHandLength)
+	fmt.Fprintf(w, `<line x1="150" y1="150" x2="%.3f" y2="%.3f" style="fill:none;stroke:#f00;stroke-width:3px;"/>`, p.X, p.Y)
+}
+
+// hourHand is the unit vector of the hour hand on an analog clock at time 't'
+// represented by a Point. Scales and analog clock's hour hand to represent the time on the clock and the
+// point the hour hand should be at on the clockface as represented on an SVG image.
+func hourHand(w io.Writer, t time.Time) {
+	p := makeHand(deriveHourHandPoint(t), hourHandLength)
 	fmt.Fprintf(w, `<line x1="150" y1="150" x2="%.3f" y2="%.3f" style="fill:none;stroke:#f00;stroke-width:3px;"/>`, p.X, p.Y)
 }
 
