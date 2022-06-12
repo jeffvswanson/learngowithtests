@@ -61,7 +61,7 @@ func TestSVGWriterMinuteHand(t *testing.T) {
 		time      time.Time
 		line      Line
 	}{
-		{"0 minute position", simpleTime(0, 0, 0), Line{150, 150, 150, 70}},
+		{"0 minute position", simpleTime(0, 0, 0), Line{150, 150, 150, 60}},
 	}
 	for _, tc := range cases {
 		t.Run(tc.condition, func(t *testing.T) {
