@@ -18,7 +18,7 @@ type SVG struct {
 	ViewBox string   `xml:"viewBox,attr"`
 	Version string   `xml:"version,attr"`
 	Circle  Circle   `xml:"circle"`
-	Line    []Line   `xml:"line`
+	Line    []Line   `xml:"line"`
 }
 type Circle struct {
 	Cx float64 `xml:"cx,attr"`
@@ -48,9 +48,8 @@ func TestSVGWriterSecondHand(t *testing.T) {
 
 			svg := SVG{}
 			xml.Unmarshal(b.Bytes(), &svg)
-
 			if !containsLine(tc.line, svg.Line) {
-				t.Errorf("got (%+v) coordinates in the SVG output, want %+v", tc.line, svg.Line)
+				t.Errorf("got %+v coordinates in the SVG output, want %+v", svg, tc.line)
 			}
 		})
 	}
@@ -72,7 +71,7 @@ func TestSVGWriterMinuteHand(t *testing.T) {
 			svg := SVG{}
 			xml.Unmarshal(b.Bytes(), &svg)
 			if !containsLine(tc.line, svg.Line) {
-				t.Errorf("got minute hand line %+v, want %+v", tc.line, svg.Line)
+				t.Errorf("got minute hand line coordinates %+v, want %+v", svg.Line, tc.line)
 			}
 		})
 	}
