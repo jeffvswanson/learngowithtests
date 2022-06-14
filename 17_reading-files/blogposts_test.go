@@ -1,6 +1,8 @@
 package blogposts_test
 
 import (
+	"errors"
+	"io/fs"
 	"testing"
 	"testing/fstest"
 
@@ -19,4 +21,10 @@ func TestNewBlogPosts(t *testing.T) {
 	if len(posts) != len(fs) {
 		t.Errorf("got %d posts, want %d", len(posts), len(fs))
 	}
+}
+
+type StubFailingFS struct{}
+
+func (s StubFailingFS) Open(name string) (fs.File, error) {
+	return nil, errors.New("i purposefully cause your test to fail")
 }
