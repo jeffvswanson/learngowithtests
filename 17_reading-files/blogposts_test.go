@@ -25,13 +25,18 @@ func TestNewBlogPosts(t *testing.T) {
 
 	got := posts[0]
 	want := blogposts.Post{Title: "Post 1"}
-	if !reflect.DeepEqual(got, want) {
-		t.Errorf("got %+v, want %+v", got, want)
-	}
+	assertPost(t, got, want)
 }
 
 type StubFailingFS struct{}
 
 func (s StubFailingFS) Open(name string) (fs.File, error) {
 	return nil, errors.New("i purposefully cause your test to fail")
+}
+
+func assertPost(t *testing.T, got blogposts.Post, want blogposts.Post) {
+	t.Helper()
+	if !reflect.DeepEqual(got, want) {
+		t.Errorf("got %+v, want %+v", got, want)
+	}
 }
