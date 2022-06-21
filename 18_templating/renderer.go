@@ -21,10 +21,9 @@ func renderTags(tags []string) string {
 	if len(tags) > 0 {
 		buf.WriteString("<ul>")
 		for _, tag := range tags {
-			buf.WriteString("<li>")
-			buf.WriteString(tag)
-			buf.WriteString("</li>")
+			buf.WriteString("<li>" + tag + "</li>")
 		}
 		buf.WriteString("</ul>")
+	}
 	return buf.String()
 }
