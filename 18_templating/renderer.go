@@ -1,8 +1,7 @@
 package blogrenderer
 
 import (
-	"bytes"
-	"fmt"
+	"html/template"
 	"io"
 )
 
@@ -11,19 +10,17 @@ type Post struct {
 	Tags                     []string
 }
 
-func Render(w io.Writer, p Post) error {
-	_, err := fmt.Fprintf(w, "<h1>%s</h1><p>%s</p>%s", p.Title, p.Description, renderTags(p.Tags))
-	return err
-}
+const (
+	postTemplate = `<h1>{{.Title}}</h1><p>{{.Description}}</p>Tags: <ul>{{range .Tags}}<li>{{.}}</li>{{end}}</ul>`
+)
 
-func renderTags(tags []string) string {
-	var buf bytes.Buffer
-	if len(tags) > 0 {
-		buf.WriteString("<ul>")
-		for _, tag := range tags {
-			buf.WriteString("<li>" + tag + "</li>")
-		}
-		buf.WriteString("</ul>")
+func Render(w io.Writer, p Post) error {
+	templ, err := template.New("blog").Parse(postTemplate)
+	if err != nil {
+		return err
 	}
-	return buf.String()
+	if err := templ.Execute(w, p); err != nil {
+		return err
+	}
+	return nil
 }
